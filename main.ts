@@ -19,6 +19,9 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Pickup, function (sprite, otherS
         sprites.destroy(otherSprite)
     }
 })
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+	
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (COl1) {
         projectile = sprites.createProjectileFromSprite(img`
@@ -160,6 +163,25 @@ let RoomClear = false
 let Issac: Sprite = null
 info.setLife(3)
 tiles.setCurrentTilemap(tilemap`StartRoom`)
+mp.setPlayerSprite(mp.playerSelector(mp.PlayerNumber.Two), sprites.create(img`
+    . . . . . . . . . . . . 
+    . . . f f f f f f . . . 
+    . . f f f f f f f f . . 
+    . f f f f f f f f f f . 
+    . f f f 9 f f f 9 f f . 
+    . f f f 9 f f f 9 f f . 
+    . f f f f f f f f f f . 
+    . . f f f 1 1 f f f . . 
+    . . . f 1 f f 1 f . . . 
+    . f f f f f f f f f f . 
+    . f f f f f f f f f f . 
+    f f f f f f f f f f f f 
+    f f f f f f f f f f f f 
+    f f . f f f f f f . f f 
+    . . . f f f f f f . . . 
+    . . . f f . . f f . . . 
+    `, SpriteKind.Player))
+mp.moveWithButtons(mp.playerSelector(mp.PlayerNumber.Two))
 Issac = sprites.create(img`
     . . . . . . . . . . . . 
     . . . d d d d d d . . . 
