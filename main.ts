@@ -1,6 +1,8 @@
 namespace SpriteKind {
     export const Date = SpriteKind.create()
     export const Pickup = SpriteKind.create()
+    export const Dummy = SpriteKind.create()
+    export const key = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (Speed == 1) {
@@ -18,6 +20,9 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Pickup, function (sprite, otherS
         info.changeLifeBy(1)
         sprites.destroy(otherSprite)
     }
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Dummy, function (sprite, otherSprite) {
+    Dummy.sayText("Press \"A\" to shoot me!")
 })
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
 	
@@ -62,6 +67,9 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile3`, function (sprite, l
         tiles.placeOnRandomTile(Issac, assets.tile`myTile4`)
     }
 })
+function aName (name: string) {
+    return "" + Name
+}
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     if (Speed == 1) {
     	
@@ -69,6 +77,51 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
         X = 50
         Y = 0
     }
+})
+function Dummy2 () {
+    Dummy = sprites.create(img`
+        . . . . . . . . . . . . 
+        . . . . . . . . . . . . 
+        . . . f f f f f . . . . 
+        . . f 1 f 1 f 1 f . . . 
+        . . f 1 f 1 f 1 f . . . 
+        . . f 1 1 1 1 1 f . . . 
+        . . f 1 f f f 1 f . . . 
+        . . . 1 1 1 1 1 . . . . 
+        . . f 1 1 1 1 1 f . . . 
+        . f 1 1 1 1 1 1 1 f . . 
+        . f f f 1 1 1 f f f . . 
+        . . . . f 1 f . . . . . 
+        . . . . f 1 f . . . . . 
+        . . . f 1 1 1 f . . . . 
+        . . f 1 1 1 1 1 f . . . 
+        f f 1 1 1 1 1 1 1 f f f 
+        `, SpriteKind.Dummy)
+    tiles.placeOnRandomTile(Dummy, assets.tile`myTile`)
+}
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Dummy, function (sprite, otherSprite) {
+    RoomClear = true
+    sprites.destroy(otherSprite)
+    sprites.destroy(sprite)
+    key = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . 5 5 5 . . . . . . . . . . 
+        . . 5 . . . 5 . . . . . . . . . 
+        . . 5 . . . 5 5 5 5 5 5 5 . . . 
+        . . 5 . . . 5 . . . 5 . 5 . . . 
+        . . . 5 5 5 . . . . 5 . 5 . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.key)
+    tiles.placeOnTile(key, tiles.getTileLocation(8, 6))
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     if (Speed == 1) {
@@ -112,6 +165,22 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile2`, function (sprite, l
         Skel.follow(Issac, 50)
     }
 })
+function OnlyArray () {
+    text_list = [
+    "Do not die",
+    "You are the vessel",
+    "No mind to think",
+    "Shaw"
+    ]
+    game.splash("Helpful tip: " + text_list._pickRandom())
+}
+sprites.onOverlap(SpriteKind.Player, SpriteKind.key, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite)
+    for (let value of tiles.getTilesByType(sprites.dungeon.floorLight0)) {
+        tiles.setWallAt(value, false)
+        tiles.setTileAt(value, assets.tile`myTile1`)
+    }
+})
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     Enemy1 += 1
     sprites.destroy(sprite)
@@ -151,8 +220,11 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
     sprite.setFlag(SpriteFlag.GhostThroughSprites, false)
 })
 let Enemy1 = 0
+let text_list: string[] = []
 let Skel: Sprite = null
+let key: Sprite = null
 let projectile: Sprite = null
+let Dummy: Sprite = null
 let Hear1: Sprite = null
 let Y = 0
 let X = 0
@@ -161,8 +233,15 @@ let MaxHp = 0
 let COl1 = false
 let RoomClear = false
 let Issac: Sprite = null
+let Name = ""
+Name = game.askForString("What is your name?", 12)
+game.splash(aName(Name))
+aName("abc")
+game.splash("What a nice name")
+OnlyArray()
 info.setLife(3)
 tiles.setCurrentTilemap(tilemap`StartRoom`)
+Dummy2()
 mp.setPlayerSprite(mp.playerSelector(mp.PlayerNumber.Two), sprites.create(img`
     . . . . . . . . . . . . 
     . . . f f f f f f . . . 
@@ -203,6 +282,6 @@ Issac = sprites.create(img`
 controller.moveSprite(Issac)
 scene.cameraFollowSprite(Issac)
 tiles.placeOnRandomTile(Issac, assets.tile`myTile4`)
-RoomClear = true
+RoomClear = false
 COl1 = true
 MaxHp = 3
